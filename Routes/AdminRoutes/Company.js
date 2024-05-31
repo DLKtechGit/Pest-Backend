@@ -5,44 +5,45 @@ const DeletedCustomer = require("../../Models/AdminSchema/DeletedCustomer");
 const { route } = require("./CreateService");
 
 router.post("/createCompany", async (req, res) => {
-  let { name, address, email, country, state, city, phoneNumber } = req.body
-  if (!name || !address || !email || !country || !state || !city || !phoneNumber) {
-    res.statusMessage = "Missing some required Data....."
-    return res.status(201).json()
-  }
-  try {
-    let CheckCompanyName = await Company.findOne({ email: email })
-    if (CheckCompanyName) {
-      res.status(200).json({ message: "Company Name Already Found... Try another Name" })
-    } else {
-      const newCompany = new Company({
-        name: name,
-        address: address,
-        email: email,
-        country: country,
-        state: state,
-        city: city,
-        phoneNumber: phoneNumber,
-        role:"Customer",
-        created_date: new Date,
-      })
-      let result = await newCompany.save()
+  const { name, address, email, country, state, city, phoneNumber } = req.body;
 
-      if (result) {
-        res.statusMessage = "New Service created Successfully..."
-        res.status(200).json({
-          data: result
-        })
-      }
+  if (!name || !address || !email || !country || !state || !city || !phoneNumber) {
+    res.statusMessage = "Missing some required data.";
+    return res.status(400).json({ message: "Missing some required data." });
+  }
+
+  try {
+
+    let existingCompany = await Company.findOne({ email: email });
+    if (existingCompany) {
+      return res.status(409).json({ message: "Company email already found. Try another email." });
     }
+
+    const newCompany = new Company({
+      name: name,
+      address: address,
+      email: email,
+      country: country,
+      state: state,
+      city: city,
+      phoneNumber: phoneNumber,
+      role: "Customer",
+      created_date: new Date(),
+    });
+
+    let result = await newCompany.save();
+
+    res.status(201).json({
+      message: "Customer created successfully.",
+      data: result,
+    });
+
+  } catch (err) {
+    console.error("Error creating company:", err);
+    res.statusMessage = "Service creation failed.";
+    res.status(500).json({ message: "Service creation failed. Please try again later." });
   }
-  catch (err) {
-    console.log("err--------------------->",err);
-    res.statusMessage = "Service creation Failed..."
-    res.status(400).json({
-    })
-  }
-}) 
+});
 
 router.post("/editCompany/:id", async (req, res) => {
   const companyId = req.params.id;

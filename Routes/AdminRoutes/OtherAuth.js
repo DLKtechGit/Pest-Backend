@@ -64,7 +64,7 @@ router.post("/reset-password", async (req, res) => {
     }
 
     user.password = newPassword;
-    user.confirmpassword = confirmpassword;
+    user.confirmpassword = confirmpassword; 
     await user.save();
 
     // Send response to client
@@ -84,7 +84,7 @@ router.post("/register", async (req, res) => {
       { $set: { password,  registered: true } }
     );
 
-    res.status(200).json({ message: "Customer registered successfully" });
+    res.status(200).json({ message: "Login Created Successfully" });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "Server Error" });

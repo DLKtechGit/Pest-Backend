@@ -7,13 +7,13 @@ router.post('/createTechnician', async (req, res) => {
   let { firstName, lastName, email, phoneNumber } = req.body
   if (!firstName || !lastName || !phoneNumber || !email ) {
     res.statusMessage = "Missing some required Data....."
-    return res.status(201).json()
+    return res.status(400).json()
   }
 
   try {
     let CheckTechnician = await Technician.findOne({ email: email })
     if (CheckTechnician) {
-      res.status(200).json({ message: "Technician Already Found... Try another Name" })
+      res.status(409).json({ message: "Technician Already Found... Try another Name" })
     } else {
       const newTechnician = new Technician({
         firstName: firstName,
@@ -31,7 +31,7 @@ router.post('/createTechnician', async (req, res) => {
 
       if (result) {
         res.statusMessage = "New Technician created Successfully..."
-        res.status(200).json({
+        res.status(201).json({
           data: result
         })
       }
@@ -39,7 +39,7 @@ router.post('/createTechnician', async (req, res) => {
   }
   catch (err) {
     res.statusMessage = "Technician creation Failed..."
-    res.status(400).json({
+    res.status(500).json({
     })
   }
 })

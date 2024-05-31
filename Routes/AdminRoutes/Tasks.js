@@ -146,7 +146,7 @@ router.get("/getTasksbystart", async (req, res) => {
 
 
 router.get("/getTask/:taskId", async (req, res) => {
-    const taskId = req.params.taskId;
+    const taskId = req.params.taskId; 
   
     try {
       const task = await Task.findOne({ "technicians.tasks._id": taskId });
@@ -154,14 +154,6 @@ router.get("/getTask/:taskId", async (req, res) => {
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
-      // const specificTaskItem = task.technicians.reduce((acc, technician) => {
-      //   const foundTask = technician.tasks.find((task) => task._id == taskId);
-      //   return foundTask ? foundTask : acc;
-      // }, null);
-  
-      // if (!specificTaskItem) {
-      //   return res.status(404).json({ message: "Task item not found" });
-      // }
   
       res.status(200).json({ task: task});
   
